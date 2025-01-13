@@ -47,20 +47,55 @@ This Terraform configuration automates the setup of the following components in 
 ## Architecture Diagram
 
 Here’s a high-level diagram of the architecture:
+![Three-Tier Architecture](./three-tier-png.webp)
 
-+---------------------------------------------+ | Internet | | | | | +--------------------+ | | | Application Load | | | | Balancer | | | +--------------------+ | | | | | +---------------------+ | | | Web Tier (EC2) | | | | (Public Subnets) | | | +---------------------+ | | | | | +---------------------+ | | | Application Servers | | | | (Private Subnets) | | | +---------------------+ | | | | | +------------------------+ | | | Database (RDS) | | | | (Private Subnets) | | | +------------------------+ | +---------------------------------------------+
+---
 
-### Key Components:
+## Variables
 
-- **Public Subnet**: Contains the **Application Load Balancer** (ALB) that routes traffic to the web servers (EC2 instances).
-- **Private Subnet**: Houses **Application Servers** (EC2 instances) that run the business logic.
-- **Database Tier**: The **RDS PostgreSQL** instance located in the private subnet for storing and managing data.
+### Subnet Configuration
+
+| Variable Name    | Type | Default | Description                                                             |
+| ---------------- | ---- | ------- | ----------------------------------------------------------------------- |
+| `subnets_config` | List | -       | List of objects containing CIDR blocks and their public/private status. |
+
+**Validation**: CIDR blocks must be valid.
+
+### Database Configuration
+
+| Variable Name    | Type   | Default                        | Description                                                              |
+| ---------------- | ------ | ------------------------------ | ------------------------------------------------------------------------ |
+| `project_name`   | String | `Terraform-Three-Tier-Project` | The name of the project.                                                 |
+| `instance_class` | String | `db.t3.micro`                  | The instance class for the RDS instance.                                 |
+| `storage_size`   | Number | 10                             | The storage size (in GB) for the RDS instance. Must be between 5 and 10. |
+| `engine`         | String | `postgres-14`                  | The database engine. Supports `postgres-14` or `postgres-latest`.        |
+| `credentials`    | Object | -                              | Credentials for the RDS instance, including `username` and `password`.   |
+
+**Validation**:
+
+- Password must be at least 8 characters long, contain at least one letter, one digit, and can include special characters: `+`, `-`, `_`, `?`.
+
+---
 
 ## Prerequisites
 
 - [Terraform](https://www.terraform.io/downloads.html) installed.
-- [AWS CLI](https://aws.amazon.com/cli/) configured with appropriate AWS credentials.
+- [AWS CLI](https://aws.amazon.com/cli/) installed and configured with appropriate AWS credentials.
 - An AWS account with the necessary permissions to create VPCs, subnets, security groups, RDS instances, IAM roles, and more.
+
+### Configuring AWS CLI
+
+Run the following command to configure AWS CLI:
+
+```bash
+aws configure
+You will be prompted to enter:
+    AWS Access Key ID
+    AWS Secret Access Key
+    Default region name (e.g., us-east-1)
+    Default output format (optional)
+
+```
 
 ## Setup Instructions
 
@@ -73,3 +108,51 @@ git clone https://github.com/hasan-abdirahman/terraform-three-tier-architecture.
 cd terraform-three-tier-architecture
 
 ```
+
+### 2. Configure Variables
+
+Create a terraform.tfvars file in the project root
+
+```
+subnets_config = [
+   {
+   cidr_block = "10.0.0.0/24"
+   isPublic = true
+   },
+    {
+   cidr_block = "10.0.0.0/24"
+   },
+   {
+   cidr_block = "10.0.0.0/24"
+   }
+]
+credentials = {
+   username = "AKIAZAUT"
+   password = "3DlCheT0OJd3d4Q4ddGy"
+}
+
+subnet_ids = []
+security_group_ids = []
+
+```
+
+### Initalize Terraform
+
+terraform init
+
+### Validate Configuration
+
+terraform validate
+
+### Plan Deployment
+
+terraform plan
+
+### Apply Configuration
+
+terraform apply
+Type yes when prompted to confirm.
+
+### Cleanup
+
+terraform destroy
