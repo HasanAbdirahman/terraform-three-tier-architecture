@@ -44,6 +44,11 @@ resource "aws_db_instance" "default" {
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
   vpc_security_group_ids = local.security_group_ids
 
+# Enable storage encryption
+  storage_encrypted      = true
+#  KMS key for encryption
+  kms_key_id             = var.kms_key_id
+
   # Enable CloudWatch logs export
   enabled_cloudwatch_logs_exports = [
     "error",    # Export error logs

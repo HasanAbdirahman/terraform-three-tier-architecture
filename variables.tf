@@ -72,6 +72,11 @@ variable "credentials" {
     EOT
   }
 }
+variable "kms_key_id" {
+  type        = string
+  description = "KMS key ID to encrypt RDS storage. If not set, the default key is used."
+  default     = null
+}
 
 ####################
 # DB Network Configuration
