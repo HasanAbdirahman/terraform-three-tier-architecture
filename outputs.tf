@@ -53,4 +53,3 @@ output "public_subnet_ids" {
   value       = local.public_subnet_ids
   description = "value of the public subnet ids created for the RDS instance"
 }
-

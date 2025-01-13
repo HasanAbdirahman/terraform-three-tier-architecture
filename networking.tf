@@ -74,4 +74,3 @@ resource "aws_route_table_association" "this" {
   subnet_id      = each.key
   route_table_id = aws_route_table.rtb[0].id
 }
-
