@@ -1,4 +1,4 @@
-/*
+"/*
 Since we created alb and asg and attached to each other
 Now here we are going to create iam role for the ec2 instance
 in the ASG  and iam policy permission for ALB integration
