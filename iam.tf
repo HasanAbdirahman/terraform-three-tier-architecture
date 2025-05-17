@@ -3,10 +3,19 @@ Since we created alb and asg and attached to each other
 Now here we are going to create iam role for the ec2 instance
 in the ASG  and iam policy permission for ALB integration
 
-Then we are attching the role with thepolicy permission
+Then we are attaching the role with thepolicy permission
 Lastly creating an instance profile and attach it to the ASG
 lAUNCH Template we created in the auto-scaling-group.tf file.
 "iam_instance_profile" in the launch template resource
+
+In Terraform, creating an IAM role with an assume role policy for services
+like RDS or EC2 and then attaching a separate policy for specific permissions, such 
+as writing CloudWatch Logs, is a standard and secure approach. The assume role 
+policy ensures only the intended service (e.g., RDS) can assume the role, while 
+the attached policy grants the specific actions the role is allowed to perform 
+(e.g., `logs:CreateLogStream`). This separation of identity (role) and permissions
+(policy) enables reusability, modularity, and adherence to the principle of least 
+privilege, ensuring that each service has only the permissions it requires.
 */
 
 resource "aws_iam_role" "ec2_instance_role" {
